@@ -378,18 +378,25 @@ def cornersHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
 
     position = state[0]
-    visitedCorners = state[1]
 
     if position in corners:
         return 0
 
-    distCorners = []
-    for corner in corners:
-        if corner not in visitedCorners:
-            distance = util.manhattanDistance(corner, position)
-            distCorners += [distance]
+    visitedCorners = state[1]
+    unvisitedCorners = [c for c in corners if c not in visitedCorners]
 
-    return min(distCorners) # Default to trivial solution
+    totalDist = 0
+    while unvisitedCorners:
+        distOfCorners = []
+        for corner in unvisitedCorners:
+            distOfCorners += [(util.manhattanDistance(corner, position), corner)]
+        nextCorner = min(distOfCorners, key = lambda x: x[0])
+        totalDist += nextCorner[0]
+        position = nextCorner[1]
+        unvisitedCorners.remove(position)
+
+
+    return totalDist # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
